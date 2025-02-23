@@ -110,6 +110,22 @@ CREATE TABLE nilai (
     FOREIGN KEY (materi_id) REFERENCES materi(id)
 );
 
+CREATE TABLE `log_aktivitas` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `description` text NOT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE pengguna
+ADD COLUMN last_login DATETIME NULL DEFAULT NULL,
+ADD COLUMN last_ip VARCHAR(45) NULL DEFAULT NULL;
+
 CREATE TABLE notifikasi (
     id INT PRIMARY KEY AUTO_INCREMENT,
     pengguna_id INT,
