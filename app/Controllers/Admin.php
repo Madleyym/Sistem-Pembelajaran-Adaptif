@@ -8,6 +8,7 @@ use App\Models\MateriModel;
 use App\Models\KelasModel;
 use App\Models\ChatbotModel;
 use App\Models\EvaluasiModel;
+use App\Models\LogAktivitasModel; 
 
 class Admin extends Controller
 {
@@ -16,6 +17,7 @@ class Admin extends Controller
     protected $kelasModel;
     protected $chatbotModel;
     protected $evaluasiModel;
+    protected $logAktivitasModel; // Tambahkan ini
 
     public function __construct()
     {
@@ -24,6 +26,7 @@ class Admin extends Controller
         $this->kelasModel = new KelasModel();
         $this->chatbotModel = new ChatbotModel();
         $this->evaluasiModel = new EvaluasiModel();
+        $this->logAktivitasModel = new LogAktivitasModel(); // Tambahkan ini
     }
 
     public function index()
@@ -44,7 +47,7 @@ class Admin extends Controller
             // Data pembelajaran
             'learning_progress' => $this->evaluasiModel->getLearningProgress(),
             'class_performance' => $this->evaluasiModel->getClassPerformance(),
-
+            'recent_activities' => $this->logAktivitasModel->getRecentActivities(),
             // Data ChatBot
             'chatbot_labels' => ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
             'chatbot_data' => $this->chatbotModel->getWeeklyInteractions(),
@@ -69,20 +72,25 @@ class Admin extends Controller
 
     private function getRecentActivities()
     {
-        // Contoh data aktivitas (dalam implementasi nyata, ini akan diambil dari database)
         return [
             [
                 'type' => 'success',
+                'icon' => 'check',  // Menambahkan icon
+                'title' => 'Materi Baru', // Menambahkan title
                 'description' => 'Materi baru ditambahkan: Pengenalan Bahasa Daerah Tingkat Dasar',
                 'time' => '5 menit yang lalu'
             ],
             [
                 'type' => 'info',
+                'icon' => 'user-plus',
+                'title' => 'Siswa Baru',
                 'description' => 'Siswa baru mendaftar ke kelas Bahasa Daerah 4A',
                 'time' => '10 menit yang lalu'
             ],
             [
                 'type' => 'warning',
+                'icon' => 'bot',
+                'title' => 'Update ChatBot',
                 'description' => 'Update konfigurasi ChatBot AI',
                 'time' => '30 menit yang lalu'
             ]
