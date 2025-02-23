@@ -132,6 +132,33 @@ CREATE TABLE orangtua_siswa (
     FOREIGN KEY (siswa_id) REFERENCES pengguna(id)
 );
 
+CREATE TABLE chat_bot (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pertanyaan TEXT NOT NULL,
+    jawaban TEXT NOT NULL,
+    kategori VARCHAR(100),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE chat_history (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    pesan TEXT NOT NULL,
+    response TEXT,
+    is_bot BOOLEAN DEFAULT FALSE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES pengguna(id)
+);
+
+-- Menghubungkan ortu1 dengan siswa1
+INSERT INTO orangtua_siswa (orangtua_id, siswa_id) 
+VALUES (
+    (SELECT id FROM pengguna WHERE username = 'ortu1'), -- ID orang tua
+    (SELECT id FROM pengguna WHERE username = 'siswa1') -- ID siswa
+);
+
 -- Admin
 INSERT INTO pengguna (username, password, email, peran, nama_lengkap) 
 VALUES ('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@sekolah.id', 'admin', 'Administrator');
@@ -149,9 +176,3 @@ INSERT INTO pengguna (username, password, email, peran, nama_lengkap)
 VALUES ('ortu1', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ortu1@sekolah.id', 'orangtua', 'Orang Tua Satu');
 
 
--- Menghubungkan ortu1 dengan siswa1
-INSERT INTO orangtua_siswa (orangtua_id, siswa_id) 
-VALUES (
-    (SELECT id FROM pengguna WHERE username = 'ortu1'), -- ID orang tua
-    (SELECT id FROM pengguna WHERE username = 'siswa1') -- ID siswa
-);
