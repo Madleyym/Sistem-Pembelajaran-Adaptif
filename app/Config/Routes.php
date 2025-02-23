@@ -16,28 +16,19 @@ $routes->get('admin', 'Admin::index', ['filter' => 'auth']);
 $routes->get('chatbot', 'ChatBot::index', ['filter' => 'auth']);
 $routes->post('chatbot/sendMessage', 'ChatBot::sendMessage', ['filter' => 'auth']);
 
-$routes->group('', ['filter' => 'auth'], function ($routes) {
-    // Admin Routes
-    $routes->group('admin', function ($routes) {
-        $routes->get('/', 'Admin::index');
-        // Tambahkan route admin lainnya di sini
-    });
+// Routes yang memerlukan autentikasi
+$routes->group('admin', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'Admin::dashboard');
+});
 
-    // Guru Routes
-    $routes->group('guru', function ($routes) {
-        $routes->get('/', 'Guru::index');
-        // Tambahkan route guru lainnya di sini
-    });
+$routes->group('guru', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'Guru::dashboard');
+});
 
-    // Siswa Routes
-    $routes->group('siswa', function ($routes) {
-        $routes->get('/', 'Siswa::index');
-        // Tambahkan route siswa lainnya di sini
-    });
+$routes->group('siswa', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'Siswa::dashboard');
+});
 
-    // Orangtua Routes
-    $routes->group('orangtua', function ($routes) {
-        $routes->get('/', 'Orangtua::index');
-        // Tambahkan route orangtua lainnya di sini
-    });
+$routes->group('orangtua', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'Orangtua::dashboard');
 });
