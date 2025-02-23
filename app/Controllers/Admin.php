@@ -1,147 +1,153 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin - Sistem Pembelajaran</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
-</head>
+namespace App\Controllers;
 
-<body>
+use CodeIgniter\Controller;
+use App\Models\PenggunaModel;
+use App\Models\MateriModel;
+use App\Models\KelasModel;
+use App\Models\ChatbotModel;
+use App\Models\EvaluasiModel;
 
-    <!-- Sidebar -->
-    <div class="container-fluid">
-        <div class="row">
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
-                <div class="position-sticky pt-3">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active text-white" href="<?= base_url('admin') ?>">
-                                <i class='bx bxs-dashboard'></i>
-                                Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="<?= base_url('admin/guru') ?>">
-                                <i class='bx bxs-user'></i>
-                                Manajemen Guru
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="<?= base_url('admin/siswa') ?>">
-                                <i class='bx bxs-group'></i>
-                                Manajemen Siswa
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="<?= base_url('admin/orangtua') ?>">
-                                <i class='bx bxs-family'></i>
-                                Manajemen Orang Tua
-                            </a>
-                        </li>
-                        <li class="nav-item mt-5">
-                            <a class="nav-link text-white" href="<?= base_url('logout') ?>">
-                                <i class='bx bx-log-out'></i>
-                                Logout
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+class Admin extends Controller
+{
+    protected $penggunaModel;
+    protected $materiModel;
+    protected $kelasModel;
+    protected $chatbotModel;
+    protected $evaluasiModel;
 
-            <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Dashboard Admin</h1>
-                    <div class="btn-toolbar mb-2 mb-md-0">
-                        <div class="btn-group me-2">
-                            <span class="btn btn-sm btn-outline-secondary"><?= date('d M Y') ?></span>
-                        </div>
-                    </div>
-                </div>
+    public function __construct()
+    {
+        $this->penggunaModel = new PenggunaModel();
+        $this->materiModel = new MateriModel();
+        $this->kelasModel = new KelasModel();
+        $this->chatbotModel = new ChatbotModel();
+        $this->evaluasiModel = new EvaluasiModel();
+    }
 
-                <!-- Statistics Cards -->
-                <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <div class="card bg-primary text-white h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="card-title">Total Guru</h6>
-                                        <h2 class="mb-0"><?= $total_guru ?></h2>
-                                    </div>
-                                    <i class='bx bxs-user bx-lg'></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card bg-success text-white h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="card-title">Total Siswa</h6>
-                                        <h2 class="mb-0"><?= $total_siswa ?></h2>
-                                    </div>
-                                    <i class='bx bxs-group bx-lg'></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card bg-info text-white h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="card-title">Total Orang Tua</h6>
-                                        <h2 class="mb-0"><?= $total_orangtua ?></h2>
-                                    </div>
-                                    <i class='bx bxs-family bx-lg'></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    public function index()
+    {
+        // Data untuk statistik dasar
+        $data = [
+            'total_guru' => $this->penggunaModel->where('peran', 'guru')->countAllResults(),
+            'total_siswa' => $this->penggunaModel->where('peran', 'siswa')->countAllResults(),
+            'total_orangtua' => $this->penggunaModel->where('peran', 'orangtua')->countAllResults(),
+            'total_materi' => $this->materiModel->countAllResults(),
+            'total_kelas' => $this->kelasModel->countAllResults(),
 
-                <!-- Recent Users Table -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Pengguna Terbaru</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Nama</th>
-                                        <th>Username</th>
-                                        <th>Email</th>
-                                        <th>Peran</th>
-                                        <th>Tanggal Daftar</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($pengguna_terbaru as $user): ?>
-                                        <tr>
-                                            <td><?= $user['nama_lengkap'] ?></td>
-                                            <td><?= $user['username'] ?></td>
-                                            <td><?= $user['email'] ?></td>
-                                            <td><span class="badge bg-primary"><?= ucfirst($user['peran']) ?></span></td>
-                                            <td><?= date('d M Y', strtotime($user['created_at'])) ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </div>
-    </div>
+            // Data pengguna
+            'pengguna_terbaru' => $this->penggunaModel->orderBy('created_at', 'DESC')
+                ->limit(5)
+                ->find(),
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+            // Data pembelajaran
+            'learning_progress' => $this->evaluasiModel->getLearningProgress(),
+            'class_performance' => $this->evaluasiModel->getClassPerformance(),
 
-</html>
+            // Data ChatBot
+            'chatbot_labels' => ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+            'chatbot_data' => $this->chatbotModel->getWeeklyInteractions(),
+
+            // Data aktivitas terbaru
+            'recent_activities' => $this->getRecentActivities(),
+
+            // Informasi user yang sedang login
+            'current_user' => [
+                'username' => session()->get('username'),
+                'nama_lengkap' => session()->get('nama_lengkap'),
+                'peran' => session()->get('peran'),
+                'last_login' => session()->get('last_login')
+            ],
+
+            // Informasi waktu server
+            'server_time' => date('Y-m-d H:i:s')
+        ];
+
+        return view('admin/dashboard', $data);
+    }
+
+    private function getRecentActivities()
+    {
+        // Contoh data aktivitas (dalam implementasi nyata, ini akan diambil dari database)
+        return [
+            [
+                'type' => 'success',
+                'description' => 'Materi baru ditambahkan: Pengenalan Bahasa Daerah Tingkat Dasar',
+                'time' => '5 menit yang lalu'
+            ],
+            [
+                'type' => 'info',
+                'description' => 'Siswa baru mendaftar ke kelas Bahasa Daerah 4A',
+                'time' => '10 menit yang lalu'
+            ],
+            [
+                'type' => 'warning',
+                'description' => 'Update konfigurasi ChatBot AI',
+                'time' => '30 menit yang lalu'
+            ]
+        ];
+    }
+
+    // Method untuk manajemen materi
+    public function materi()
+    {
+        $data['materi'] = $this->materiModel->findAll();
+        return view('admin/materi', $data);
+    }
+
+    // Method untuk manajemen kelas
+    public function kelas()
+    {
+        $data['kelas'] = $this->kelasModel->findAll();
+        return view('admin/kelas', $data);
+    }
+
+    // Method untuk manajemen guru
+    public function guru()
+    {
+        $data['guru'] = $this->penggunaModel->where('peran', 'guru')->findAll();
+        return view('admin/guru', $data);
+    }
+
+    // Method untuk manajemen siswa
+    public function siswa()
+    {
+        $data['siswa'] = $this->penggunaModel->where('peran', 'siswa')->findAll();
+        return view('admin/siswa', $data);
+    }
+
+    // Method untuk manajemen orangtua
+    public function orangtua()
+    {
+        $data['orangtua'] = $this->penggunaModel->where('peran', 'orangtua')->findAll();
+        return view('admin/orangtua', $data);
+    }
+
+    // Method untuk konfigurasi chatbot
+    public function chatbot()
+    {
+        $data['config'] = $this->chatbotModel->getConfig();
+        $data['interactions'] = $this->chatbotModel->getRecentInteractions();
+        return view('admin/chatbot', $data);
+    }
+
+    // Method untuk evaluasi pembelajaran
+    public function evaluasi()
+    {
+        $data['evaluasi'] = $this->evaluasiModel->getEvaluationData();
+        return view('admin/evaluasi', $data);
+    }
+    public function logAktivitas()
+    {
+        $logModel = new \App\Models\LogAktivitasModel();
+        $data['logs'] = $logModel->select('log_aktivitas.*, pengguna.username')
+        ->join('pengguna', 'pengguna.id = log_aktivitas.user_id')
+        ->orderBy('created_at', 'DESC')
+        ->paginate(20);
+        $data['pager'] = $logModel->pager;
+
+        return view('admin/log_aktivitas', $data);
+    }
+}
+
